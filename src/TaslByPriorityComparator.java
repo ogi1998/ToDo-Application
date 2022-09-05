@@ -2,6 +2,7 @@ import java.util.Comparator;
 
 public class TaslByPriorityComparator implements Comparator<TaskByPriority> {
     // Comparator by priorities: high > normal > low
+    @Override
     public int compare(TaskByPriority t1, TaskByPriority t2) {
         if (t1.getPriority().equals("high")) {
             if (t2.getPriority().equals("normal") || t2.getPriority().equals("low")) return -1;
