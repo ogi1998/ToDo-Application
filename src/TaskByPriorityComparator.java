@@ -1,6 +1,6 @@
 import java.util.Comparator;
 
-public class TaslByPriorityComparator implements Comparator<TaskByPriority> {
+public class TaskByPriorityComparator implements Comparator<TaskByPriority> {
     // Comparator by priorities: high > normal > low
     @Override
     public int compare(TaskByPriority t1, TaskByPriority t2) {
