@@ -1,8 +1,8 @@
 import java.io.*;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.PriorityQueue;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 public class CSVReader {
     String filePath;
@@ -12,6 +12,7 @@ public class CSVReader {
     }
 
     void listTasks() {
+        System.out.println("List of all tasks:");
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             StringBuilder result = new StringBuilder("");
@@ -27,10 +28,12 @@ public class CSVReader {
         } catch (IOException ex) {
             System.err.println("ERROR: File can't be read!");
         }
+
+        System.out.println();
     }
 
     void listTasksByStatus() {
-        System.out.println("Tasks listed by status (not done ([]) > done ([X])");
+        System.out.println("Tasks listed by status (not done ([]) > done ([X]):");
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean shouldPrintSeperator = false;
@@ -61,6 +64,7 @@ public class CSVReader {
         } catch (IOException ex) {
             System.err.println("ERROR: File can't be read!");
         }
+        System.out.println();
     }
 
 
@@ -83,6 +87,31 @@ public class CSVReader {
                 System.out.println(task.getName() + ", " + task.getPriority());
             }
 
+        } catch (IOException ex) {
+            System.err.println("ERROR: File can't be read!");
+        }
+        System.out.println();
+    }
+
+    void listTasksByTimestamp() {
+        System.out.println("Tasks listed by timestamp (newest first):");
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            TreeMap<Long, String> tasksByTimestamp = new TreeMap<>(Comparator.reverseOrder());
+
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] splittedLine = line.split(",");
+                LocalDateTime date = LocalDateTime.parse(splittedLine[2].trim(), DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                long miliseconds = date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+
+                tasksByTimestamp.put(miliseconds, splittedLine[3]);
+            }
+
+            for (Map.Entry<Long, String> entry : tasksByTimestamp.entrySet()) {
+                System.out.println(entry.getValue());
+            }
         } catch (IOException ex) {
             System.err.println("ERROR: File can't be read!");
         }
