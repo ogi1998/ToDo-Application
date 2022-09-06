@@ -1,27 +1,11 @@
-import java.io.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-interface DataManipulator {
-    void manipulateData(String[] fields);
-}
-public class CSVReader {
-    String filePath;
-    CSVReader(String filePath) {
-        this.filePath = filePath;
-    }
-    void read(DataManipulator dm) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
 
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                dm.manipulateData(fields);
-            }
-        } catch (IOException ex) {
-            System.err.println("ERROR: File can't be read!");
-        }
+public class CSVList extends CSVInputOutput {
+    CSVList(String fileName) {
+        super(fileName);
     }
     void listTasks() {
         StringBuilder result = new StringBuilder("");
@@ -42,11 +26,11 @@ public class CSVReader {
         boolean shouldPrintSeperator = false;
         ArrayDeque<TaskByStatus> tasksByStatus = new ArrayDeque<>();
 
-        System.out.println("Tasks listed by status (not done ([]) > done ([X]):");
+        System.out.println("Tasks listed by status (pending ([]) > done ([X]):");
 
         read(fields -> {
             if (fields[1].trim().equals("done"))
-                tasksByStatus.add(new TaskByStatus(fields[3].trim(), "[X}"));
+                tasksByStatus.add(new TaskByStatus(fields[3].trim(), "[X]"));
             else tasksByStatus.addFirst(new TaskByStatus(fields[3].trim(), "[]"));
         });
 
@@ -62,14 +46,14 @@ public class CSVReader {
     }
     void listTasksByPriority() {
         PriorityQueue<TaskByPriority> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
-        System.out.println("Tasks listed by priority (high > normal > low):");
+        System.out.println("Tasks listed by priority (high ([HI]) > normal ([NOR]) > low ([LO]):");
         read(fields -> {
             tasksByPriority.add(new TaskByPriority(fields[3].trim(), fields[4].trim()));
         });
 
         while (!tasksByPriority.isEmpty()) {
             TaskByPriority task = tasksByPriority.poll();
-            System.out.println(task.getName() + ", " + task.getPriority());
+            System.out.println(task.getPriority() + " " + task.getName());
         }
     }
     void listTasksByTimestamp() {

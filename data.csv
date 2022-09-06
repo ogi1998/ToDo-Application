@@ -1,6 +1,7 @@
-1, not done, 05-09-2022 14:55:07, enter work4, high
-2, done, 04-09-2022 16:55:07, go home, normal
-3, done, 03-09-2022 14:55:07, enter work, normal
-4, not done, 05-09-2022 12:55:07, enter work1, low
-5, done, 06-09-2022 11:55:07, enter work2, high
-6, not done, 05-09-2022 19:55:07, enter work3, normal
+1, pending, 05-09-2022 14:55:07, enter work4, [HI]
+2, done, 04-09-2022 16:55:07, go home, [NOR]
+3, done, 03-09-2022 14:55:07, enter work, [NOR]
+4, pending, 05-09-2022 12:55:07, enter work1, [LO]
+5, done, 06-09-2022 11:55:07, enter work2, [HI]
+6, pending, 05-09-2022 19:55:07, enter work3, [NOR]
+7, pending, 05-09-2022 19:55:07, enter work\n\n\n\\\, [NOR]
