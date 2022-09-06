@@ -1,13 +1,12 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 interface DataManipulator {
         void manipulateData(String[] fields);
     }
-public class CSVInputOutput {
+public class ToDoRead {
     String filePath;
-    CSVInputOutput(String filePath) {
+    ToDoRead(String filePath) {
         this.filePath = filePath;
     }
     void read(DataManipulator dm) {
@@ -22,6 +21,4 @@ public class CSVInputOutput {
             System.err.println("ERROR: File can't be read!");
         }
     }
-
-
 }

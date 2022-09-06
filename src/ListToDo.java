@@ -1,10 +1,6 @@
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-
-public class CSVList extends CSVInputOutput {
-    CSVList(String fileName) {
+public class ListToDo extends ToDoRead {
+    ListToDo(String fileName) {
         super(fileName);
     }
     void listTasks() {
@@ -19,7 +15,6 @@ public class CSVList extends CSVInputOutput {
             }
             result.append('\n');
         });
-
         System.out.println(result);
     }
     void listTasksByStatus() {
@@ -62,11 +57,7 @@ public class CSVList extends CSVInputOutput {
         System.out.println("Tasks listed by timestamp (newest first):");
 
         read(fields -> {
-
-            LocalDateTime date = LocalDateTime.parse(fields[2].trim(), DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-            long milliseconds = date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-
-            tasksByTimestamp.put(milliseconds, fields[3]);
+            tasksByTimestamp.put(ToDoUtility.dateToMillis(fields[2].trim()), fields[3]);
         });
 
         for (Map.Entry<Long, String> entry: tasksByTimestamp.entrySet()) {
