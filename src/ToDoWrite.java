@@ -26,6 +26,29 @@ public class ToDoWrite {
         }
     }
 
+    void removeTask(String userID) {
+        StringBuilder res = new StringBuilder("");
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String id = line.split(",")[0].trim();
+
+                if (userID.equals(id)) continue;
+
+                res.append(line).append('\n');
+            }
+        } catch (IOException ex) {
+            System.err.println("ERROR!");
+        }
+
+        try (FileWriter fw = new FileWriter(fileName)) {
+          fw.write(res.toString());
+        } catch (IOException ex) {
+            System.err.println("ERRROR!");
+        }
+    }
+
     int generateID(RandomAccessFile raf) throws IOException {
         StringBuilder userID = new StringBuilder("");
         char currentChar;

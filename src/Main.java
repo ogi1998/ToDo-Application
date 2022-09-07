@@ -6,6 +6,7 @@ public class Main {
 //        listToDo.listTasksByStatus();
 //        listToDo.listTasksByPriority();
 //        listToDo.listTasksByTimestamp();
-        toDoWrite.addTask();
+//        toDoWrite.addTask();
+        toDoWrite.removeTask("6");
     }
 }
