@@ -28,49 +28,53 @@ public class ToDoWrite {
     }
 
     void removeTask(String userID) {
-        StringBuilder res = new StringBuilder("");
-        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
+        StringBuilder contentAfterDelete = new StringBuilder();
+        String line;
+        long deletePos = 0;
+        boolean isIDFound = false;
+        int deletedLineLength = 0;
 
-            while ((line = br.readLine()) != null) {
+        try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (userID.equals(id)) continue;
-
-                res.append(line).append('\n');
+                if (isIDFound) contentAfterDelete.append(line).append('\n');
+                if (userID.equals(id)) {
+                    deletePos = raf.getFilePointer() - (line.length() + 1);
+                    deletedLineLength = line.length();
+                    isIDFound = true;
+                }
             }
-        } catch (IOException ex) {
-            System.err.println("ERROR!");
-        }
-
-        try (FileWriter fw = new FileWriter(fileName)) {
-          fw.write(res.toString());
+            raf.seek(deletePos);
+            raf.setLength(raf.length() - deletedLineLength);
+            raf.writeBytes(contentAfterDelete.toString());
         } catch (IOException ex) {
             System.err.println("ERROR!");
         }
     }
 
     void editTask(String userID) {
-            StringBuilder output = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updated taskkkkkkkkkkkkkkkkkkkkk, [HI]\n");
+            StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updated, [HI]\n");
             String line;
             long updatePos = 0;
-            boolean idFound = false;
+            boolean isIDFound = false;
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
 
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (userID.equals(id)) {
-                    updatePos = raf.getFilePointer() - (line.length() + 1);
-                    idFound = true;
-                    continue;
-                }
-                if (idFound) output.append(line).append('\n');
-            }
+                if (isIDFound) contentAfterUpdate.append(line).append('\n');
 
+                if (userID.equals(id)) {
+                    // TO DO: Check when new line is bigger than old and when its small then old
+                    // Change file size based on new line size
+                    updatePos = raf.getFilePointer() - (line.length() + 1);
+                    isIDFound = true;
+                }
+            }
             raf.seek(updatePos);
-            raf.writeBytes(output.toString());
+            raf.writeBytes(contentAfterUpdate.toString());
         } catch (IOException ex) {
             System.err.println("ERROR!");
         }
