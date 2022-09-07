@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.channels.FileChannel;
 
 public class ToDoWrite {
     String fileName;
@@ -45,7 +46,33 @@ public class ToDoWrite {
         try (FileWriter fw = new FileWriter(fileName)) {
           fw.write(res.toString());
         } catch (IOException ex) {
-            System.err.println("ERRROR!");
+            System.err.println("ERROR!");
+        }
+    }
+
+    void editTask(String userID) {
+            StringBuilder output = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updated taskkkkkkkkkkkkkkkkkkkkk, [HI]\n");
+            String line;
+            long updatePos = 0;
+            boolean idFound = false;
+
+        try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+
+            while ((line = raf.readLine()) != null) {
+                String id = line.split(",")[0].trim();
+
+                if (userID.equals(id)) {
+                    updatePos = raf.getFilePointer() - (line.length() + 1);
+                    idFound = true;
+                    continue;
+                }
+                if (idFound) output.append(line).append('\n');
+            }
+
+            raf.seek(updatePos);
+            raf.writeBytes(output.toString());
+        } catch (IOException ex) {
+            System.err.println("ERROR!");
         }
     }
 
