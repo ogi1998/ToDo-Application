@@ -1,14 +1,14 @@
 public class Main {
     public static void main(String[] args) {
-        ListToDo listToDo = new ListToDo("tasks.csv");
+        ToDoRead toDoRead = new ToDoRead("tasks.csv");
         ToDoWrite toDoWrite = new ToDoWrite("tasks.csv");
-//        listToDo.listTasks();
-//        listToDo.listTasksByStatus();
-//        listToDo.listTasksByPriority();
-//        listToDo.listTasksByTimestamp();
+//        toDoRead.listTasks();
+//        toDoRead.listTasksByStatus();
+//        toDoRead.listTasksByPriority();
+        toDoRead.listTasksByTimestamp();
 //        toDoWrite.addTask();
 //        toDoWrite.removeTask("6");
-        toDoWrite.editTask("7");
+//        toDoWrite.editTask("7");
 //        toDoWrite.removeTask("10");
     }
 
