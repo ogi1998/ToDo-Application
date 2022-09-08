@@ -6,8 +6,11 @@ public class ToDoWrite {
     ToDoWrite(String fileName) {
         this.fileName = fileName;
     }
+    void addTask(String command) {
+        String name = command.substring(command.indexOf("\"") + 1, command.lastIndexOf("\""));
 
-    void addTask() {
+        System.out.println(name);
+
         StringBuilder newUser = new StringBuilder("\n");
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             newUser
@@ -15,17 +18,24 @@ public class ToDoWrite {
                     .append(", pending, ")
                     .append(ToDoUtility.getCurrentDateAndTime())
                     .append(", ")
-                    .append("some random task")
-                    .append(", [NORM]");
+                    .append(name);
+            System.out.println("after append");
+            if (command.lastIndexOf("\"") != command.length() - 1) {
+                String priority = command.substring(command.lastIndexOf("\"", command.length() - 1));
+                newUser.append(", ").append(priority);
+                System.out.println("in if");
+            } else newUser.append(", [NORM]");
+            System.out.println("end of raf");
 
             raf.seek(raf.length());
             raf.writeBytes(newUser.toString());
+
+            System.out.println("end of raf");
 
         } catch (IOException ex) {
             System.err.println("ERROR: Can't write to file!");
         }
     }
-
     void removeTask(String userID) {
         StringBuilder contentAfterDelete = new StringBuilder();
 
@@ -39,12 +49,14 @@ public class ToDoWrite {
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (isIDFound) contentAfterDelete.append(line).append('\n');
                 if (userID.equals(id)) {
                     deletePos = raf.getFilePointer() - (line.length() + 1);
                     deletedLineLength = line.length();
                     isIDFound = true;
+                    continue;
                 }
+
+                if (isIDFound) contentAfterDelete.append(line).append('\n');
             }
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
@@ -56,7 +68,6 @@ public class ToDoWrite {
 
     // todo task uid -e "buy more milk" ["HI"]
     void editTask(String command) {
-
 //      StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
         Task newTask = getUpdateData(command);
         StringBuilder newContent = new StringBuilder(newTask.getId());
@@ -107,6 +118,7 @@ public class ToDoWrite {
 
         while ((currentChar = (char) raf.read()) != ',') userID.append(currentChar);
 
+        System.out.println("generate");
         return Integer.parseInt(userID.toString()) + 1;
     }
 
