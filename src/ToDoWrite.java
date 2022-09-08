@@ -58,28 +58,29 @@ public class ToDoWrite {
     void editTask(String command) {
 
 //      StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
-        String[] updateData = getUpdateData(command);
-        StringBuilder newContent = new StringBuilder();
+        Task newTask = getUpdateData(command);
+        StringBuilder newContent = new StringBuilder(newTask.getId());
 
         long updatePos = 0;
         int fileSizeDecreaseAmount = 0;
 
-        boolean isIDFound = false;
+        boolean isIdFound = false;
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
             while ((line = raf.readLine()) != null) {
+                // TODO Check for commandType and update task based on its argument
                 String id = line.split(",")[0].trim();
 
-                if (enteredId.equals(id)) {
+                if (newTask.getId().equals(id)) {
                     if (newContent.length() < line.length()) {
                         fileSizeDecreaseAmount = line.length() - newContent.length() + 1;
                     }
                     updatePos = raf.getFilePointer() - (line.length() + 1);
-                    isIDFound = true;
+                    isIdFound = true;
                     continue;
                 }
-                if (isIDFound) newContent.append(line).append('\n');
+                if (isIdFound) newContent.append(line).append('\n');
             }
             raf.seek(updatePos);
             raf.writeBytes(newContent.toString());
