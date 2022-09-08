@@ -46,37 +46,45 @@ public class ToDoWrite {
                 }
             }
             raf.seek(deletePos);
-            raf.setLength(raf.length() - deletedLineLength);
             raf.writeBytes(contentAfterDelete.toString());
+            raf.setLength(raf.length() - deletedLineLength);
         } catch (IOException ex) {
             System.err.println("ERROR!");
         }
     }
 
     void editTask(String userID) {
-            StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updated, [HI]\n");
-            String line;
+            StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
+
             long updatePos = 0;
+            int fileSizeDecreaseAmount = 0;
+
             boolean isIDFound = false;
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
-
+            String line;
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (isIDFound) contentAfterUpdate.append(line).append('\n');
 
                 if (userID.equals(id)) {
-                    // TO DO: Check when new line is bigger than old and when its small then old
-                    // Change file size based on new line size
+                    if (contentAfterUpdate.length() < line.length()) {
+                        fileSizeDecreaseAmount = line.length() - contentAfterUpdate.length() + 1;
+                    }
                     updatePos = raf.getFilePointer() - (line.length() + 1);
                     isIDFound = true;
+                    continue;
                 }
+                if (isIDFound) contentAfterUpdate.append(line).append('\n');
             }
             raf.seek(updatePos);
             raf.writeBytes(contentAfterUpdate.toString());
+            raf.setLength(raf.length() - fileSizeDecreaseAmount);
         } catch (IOException ex) {
-            System.err.println("ERROR!");
+            System.err.println("ERROR: Error updating content!");
+        }
+        finally {
+            System.out.println("Data successfully updated!");
         }
     }
 

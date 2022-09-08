@@ -8,8 +8,8 @@ public class Main {
 //        listToDo.listTasksByTimestamp();
 //        toDoWrite.addTask();
 //        toDoWrite.removeTask("6");
-        toDoWrite.editTask("10");
-//        toDoWrite.removeTask("5");
+        toDoWrite.editTask("7");
+//        toDoWrite.removeTask("10");
     }
 
 }
