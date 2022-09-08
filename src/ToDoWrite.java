@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.channels.FileChannel;
 
 public class ToDoWrite {
     String fileName;

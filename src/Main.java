@@ -5,11 +5,11 @@ public class Main {
 //        toDoRead.listTasks();
 //        toDoRead.listTasksByStatus();
 //        toDoRead.listTasksByPriority();
-        toDoRead.listTasksByTimestamp();
+//        toDoRead.listTasksByTimestamp();
+//        toDoRead.displayStats();
 //        toDoWrite.addTask();
 //        toDoWrite.removeTask("6");
 //        toDoWrite.editTask("7");
 //        toDoWrite.removeTask("10");
     }
-
 }

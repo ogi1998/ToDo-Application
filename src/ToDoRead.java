@@ -73,6 +73,19 @@ public class ToDoRead {
             System.out.println(entry.getValue());
         }
     }
+
+    void displayStats() {
+        int[] statsCount = new int[2];
+
+        System.out.println("Number of finished and unfinished tasks: ");
+        read(fields -> {
+            if (fields[1].trim().equals("done")) statsCount[0]++;
+            if (fields[1].trim().equals("pending")) statsCount[1]++;
+        });
+
+        System.out.println("Finished tasks: " + statsCount[0]);
+        System.out.println("Unfinished tasks: " + statsCount[1]);
+    }
     void read(DataManipulator dm) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
