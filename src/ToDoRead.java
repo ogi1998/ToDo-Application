@@ -85,6 +85,7 @@ public class ToDoRead {
 
         System.out.println("Finished tasks: " + statsCount[0]);
         System.out.println("Unfinished tasks: " + statsCount[1]);
+
     }
     void read(DataManipulator dm) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {

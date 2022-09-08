@@ -28,12 +28,14 @@ public class ToDoWrite {
 
     void removeTask(String userID) {
         StringBuilder contentAfterDelete = new StringBuilder();
-        String line;
+
         long deletePos = 0;
-        boolean isIDFound = false;
         int deletedLineLength = 0;
 
+        boolean isIDFound = false;
+
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            String line;
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
@@ -52,32 +54,35 @@ public class ToDoWrite {
         }
     }
 
-    void editTask(String userID) {
-            StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
+    // todo task uid -e "buy more milk" ["HI"]
+    void editTask(String command) {
 
-            long updatePos = 0;
-            int fileSizeDecreaseAmount = 0;
+//      StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
+        String[] updateData = getUpdateData(command);
+        StringBuilder newContent = new StringBuilder();
 
-            boolean isIDFound = false;
+        long updatePos = 0;
+        int fileSizeDecreaseAmount = 0;
+
+        boolean isIDFound = false;
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-
-                if (userID.equals(id)) {
-                    if (contentAfterUpdate.length() < line.length()) {
-                        fileSizeDecreaseAmount = line.length() - contentAfterUpdate.length() + 1;
+                if (enteredId.equals(id)) {
+                    if (newContent.length() < line.length()) {
+                        fileSizeDecreaseAmount = line.length() - newContent.length() + 1;
                     }
                     updatePos = raf.getFilePointer() - (line.length() + 1);
                     isIDFound = true;
                     continue;
                 }
-                if (isIDFound) contentAfterUpdate.append(line).append('\n');
+                if (isIDFound) newContent.append(line).append('\n');
             }
             raf.seek(updatePos);
-            raf.writeBytes(contentAfterUpdate.toString());
+            raf.writeBytes(newContent.toString());
             raf.setLength(raf.length() - fileSizeDecreaseAmount);
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");
@@ -102,5 +107,25 @@ public class ToDoWrite {
         while ((currentChar = (char) raf.read()) != ',') userID.append(currentChar);
 
         return Integer.parseInt(userID.toString()) + 1;
+    }
+
+    Task getUpdateData(String command) {
+        Task newTask = new Task();
+        String[] commandArgs = command.split(" ");
+
+        newTask.setCommandType(commandArgs[3].trim());
+        newTask.setId(commandArgs[2].trim());
+
+        if (newTask.getCommandType().equals("-e")) {
+            newTask.setName(commandArgs[4].trim());
+
+            if (commandArgs.length == 6) {
+                newTask.setPriority(commandArgs[5].trim());
+
+            } else if (newTask.getCommandType().equals("-d")) {
+                newTask.setDone(true);
+            } else newTask.setDone(false);
+        }
+        return newTask;
     }
 }
