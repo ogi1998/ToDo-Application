@@ -28,7 +28,7 @@ public class ToDoWrite {
     }
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
-        String IdToRemove = command.split(" ")[2].trim();
+        String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
 
         long deletePos = 0;
         int deletedLineLength = 0;
@@ -40,7 +40,9 @@ public class ToDoWrite {
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (IdToRemove.equals(id)) {
+
+
+                if (idToRemove.equals(id)) {
                     deletePos = raf.getFilePointer() - (line.length()) - 1;
                     deletedLineLength = line.length() + 1;
                     isIDFound = true;
@@ -48,11 +50,17 @@ public class ToDoWrite {
                 }
                 if (isIDFound) {
                     contentAfterDelete.append(line).append('\n');
+                } else {
+                    if (Integer.parseInt(id) > Integer.parseInt(idToRemove) || raf.getFilePointer() == raf.length()) {
+                        System.err.println("Task with that uid doesn't exist!");
+                        return;
+                    }
                 }
             }
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
             raf.setLength(raf.length() - deletedLineLength);
+            System.out.println("Task successfully removed.");
         } catch (IOException ex) {
             System.err.println("ERROR!");
         }
