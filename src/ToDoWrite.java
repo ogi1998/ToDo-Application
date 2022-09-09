@@ -8,9 +8,6 @@ public class ToDoWrite {
     }
     void addTask(String command) {
         String name = command.substring(command.indexOf("\"") + 1, command.lastIndexOf("\""));
-
-        System.out.println(name);
-
         StringBuilder newUser = new StringBuilder("\n");
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             newUser
@@ -19,19 +16,12 @@ public class ToDoWrite {
                     .append(ToDoUtility.getCurrentDateAndTime())
                     .append(", ")
                     .append(name);
-            System.out.println("after append");
             if (command.lastIndexOf("\"") != command.length() - 1) {
                 String priority = command.substring(command.lastIndexOf("\"", command.length() - 1));
                 newUser.append(", ").append(priority);
-                System.out.println("in if");
             } else newUser.append(", [NORM]");
-            System.out.println("end of raf");
-
             raf.seek(raf.length());
             raf.writeBytes(newUser.toString());
-
-            System.out.println("end of raf");
-
         } catch (IOException ex) {
             System.err.println("ERROR: Can't write to file!");
         }
