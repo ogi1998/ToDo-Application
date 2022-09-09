@@ -26,8 +26,9 @@ public class ToDoWrite {
             System.err.println("ERROR: Can't write to file!");
         }
     }
-    void removeTask(String userID) {
+    void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
+        String IdToRemove = command.split(" ")[2].trim();
 
         long deletePos = 0;
         int deletedLineLength = 0;
@@ -39,14 +40,15 @@ public class ToDoWrite {
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
 
-                if (userID.equals(id)) {
-                    deletePos = raf.getFilePointer() - (line.length() + 1);
-                    deletedLineLength = line.length();
+                if (IdToRemove.equals(id)) {
+                    deletePos = raf.getFilePointer() - (line.length()) - 1;
+                    deletedLineLength = line.length() + 1;
                     isIDFound = true;
                     continue;
                 }
-
-                if (isIDFound) contentAfterDelete.append(line).append('\n');
+                if (isIDFound) {
+                    contentAfterDelete.append(line).append('\n');
+                }
             }
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
