@@ -16,25 +16,22 @@ public class Main {
                     String[] cmdArgs = command.split(" ");
 
                     if (command.startsWith("todo")) {
-                        if (cmdArgs[1].equals("list")) {
-                            switch (command) {
-                                case "todo list" -> toDoRead.listTasks();
-                                case "todo list -s" -> toDoRead.listTasksByStatus();
-                                case "todo list -p" -> toDoRead.listTasksByPriority();
-                                case "todo list -t" -> toDoRead.listTasksByTimestamp();
-                                default -> {
-                                    System.err.println("Wrong command, try again");
+                        switch (cmdArgs[1]) {
+                            case "list" -> {
+                                switch (command) {
+                                    case "todo list" -> toDoRead.listTasks();
+                                    case "todo list -s" -> toDoRead.listTasksByStatus();
+                                    case "todo list -p" -> toDoRead.listTasksByPriority();
+                                    case "todo list -t" -> toDoRead.listTasksByTimestamp();
+                                    default -> System.err.println("Wrong command, try again");
                                 }
                             }
-                        } else if (cmdArgs[1].equals("stats")) {
-                            toDoRead.displayStats();
-                        } else if (cmdArgs[1].equals("add")) {
-                            toDoWrite.addTask(command);
-                        } else if (cmdArgs[1].equals("task")) {
-                            toDoWrite.editTask(command);
-                        } else if (cmdArgs[1].equals("remove")) {
-                            toDoWrite.removeTask(command);
-                        } else System.err.println("Wrong command, try again!");
+                            case "stats" -> toDoRead.displayStats();
+                            case "add" -> toDoWrite.addTask(command);
+                            case "task" -> toDoWrite.editTask(command);
+                            case "remove" -> toDoWrite.removeTask(command);
+                            default -> System.err.println("Wrong command, try again!");
+                        }
                     } else System.err.println("Wrong command, try again!");
                 }
             } catch (IOException ex) {

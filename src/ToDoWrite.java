@@ -6,6 +6,7 @@ public class ToDoWrite {
     ToDoWrite(String fileName) {
         this.fileName = fileName;
     }
+
     void addTask(String command) {
         String name = command.substring(command.indexOf("\"") + 1, command.lastIndexOf("\""));
         StringBuilder newUser = new StringBuilder("\n");
@@ -26,6 +27,7 @@ public class ToDoWrite {
             System.err.println("ERROR: Can't write to file!");
         }
     }
+
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
@@ -39,7 +41,6 @@ public class ToDoWrite {
             String line;
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
-
 
 
                 if (idToRemove.equals(id)) {
@@ -98,8 +99,7 @@ public class ToDoWrite {
             raf.setLength(raf.length() - fileSizeDecreaseAmount);
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");
-        }
-        finally {
+        } finally {
             System.out.println("Data successfully updated!");
         }
     }
