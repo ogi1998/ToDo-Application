@@ -10,17 +10,18 @@ public class ToDoWrite {
     void addTask(String command) {
         String name = command.substring(command.indexOf("\"") + 1, command.lastIndexOf("\""));
         StringBuilder newUser = new StringBuilder("\n");
+
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             newUser
-                    .append(generateID(raf))
-                    .append(", pending, ")
+                    .append(generateID(raf)).append(", pending, ")
                     .append(ToDoUtility.getCurrentDateAndTime())
-                    .append(", ")
-                    .append(name);
-            if (command.lastIndexOf("\"") != command.length() - 1) {
-                String priority = command.substring(command.lastIndexOf("\"", command.length() - 1));
+                    .append(", ").append(name);
+
+            if (!command.endsWith("\"")) {
+                String priority = command.substring(command.lastIndexOf("\"") + 1);
                 newUser.append(", ").append(priority);
             } else newUser.append(", [NORM]");
+
             raf.seek(raf.length());
             raf.writeBytes(newUser.toString());
         } catch (IOException ex) {
@@ -28,6 +29,45 @@ public class ToDoWrite {
         }
     }
 
+    // TODO: Not working properly
+    void removeTask1(String command) {
+        StringBuilder contentAfterDelete = new StringBuilder();
+        String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
+
+        long deletePos = findLinePositionById(idToRemove);
+
+        if (deletePos == -1) {
+            System.err.println("Task with that uid doesn't exist!");
+            return;
+        }
+
+        try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            raf.seek(deletePos);
+
+            String line = raf.readLine();
+            long deletedLineLength = line.length() + 1;
+
+            if (raf.getFilePointer() + deletedLineLength == raf.length()){
+                raf.setLength(raf.length() - deletedLineLength);
+                System.out.println("hi");
+                return;
+            }
+            else {
+                raf.seek(deletePos - 1);
+                while ((line = raf.readLine()) != null)
+                    contentAfterDelete.append(line).append('\n');
+            }
+
+            raf.seek(deletePos);
+            raf.writeBytes(contentAfterDelete.toString());
+            raf.setLength(raf.length() - deletedLineLength);
+        } catch (IOException ex) {
+            System.err.println("Error removing the task!");
+        }
+        finally {
+            System.out.println("Task successfully removed");
+        }
+    }
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
@@ -41,7 +81,6 @@ public class ToDoWrite {
             String line;
             while ((line = raf.readLine()) != null) {
                 String id = line.split(",")[0].trim();
-
 
                 if (idToRemove.equals(id)) {
                     deletePos = raf.getFilePointer() - (line.length()) - 1;
@@ -61,9 +100,11 @@ public class ToDoWrite {
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
             raf.setLength(raf.length() - deletedLineLength);
-            System.out.println("Task successfully removed.");
         } catch (IOException ex) {
-            System.err.println("ERROR!");
+            System.err.println("Error removing the task!");
+        }
+        finally {
+            System.out.println("Task successfully removed.");
         }
     }
 
@@ -105,7 +146,7 @@ public class ToDoWrite {
     }
 
     int generateID(RandomAccessFile raf) throws IOException {
-        StringBuilder userID = new StringBuilder("");
+        StringBuilder userID = new StringBuilder();
         char currentChar;
 
         raf.seek(raf.length() - 1);
@@ -115,11 +156,32 @@ public class ToDoWrite {
 
             if ((char) raf.read() == '\n') break;
         }
-
         while ((currentChar = (char) raf.read()) != ',') userID.append(currentChar);
 
-        System.out.println("generate");
         return Integer.parseInt(userID.toString()) + 1;
+    }
+
+    long findLinePositionById(String id) {
+        long position = -1;
+
+        try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            String line;
+
+            while ((line = raf.readLine()) != null) {
+                String lineId = line.substring(0, line.indexOf(",")).trim();
+
+                if (id.equals(lineId)) {
+                    position = raf.getFilePointer() - line.length();
+                    break;
+                }
+                if (Integer.parseInt(lineId) > Integer.parseInt(id) || raf.getFilePointer() == raf.length()) {
+                    break;
+                }
+            }
+        } catch (IOException ex) {
+            System.err.println("Error finding id");
+        }
+        return position;
     }
 
     Task getUpdateData(String command) {

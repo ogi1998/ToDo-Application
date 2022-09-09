@@ -29,7 +29,7 @@ public class Main {
                             case "stats" -> toDoRead.displayStats();
                             case "add" -> toDoWrite.addTask(command);
                             case "task" -> toDoWrite.editTask(command);
-                            case "remove" -> toDoWrite.removeTask(command);
+                            case "remove" -> toDoWrite.removeTask1(command);
                             default -> System.err.println("Wrong command, try again!");
                         }
                     } else System.err.println("Wrong command, try again!");
