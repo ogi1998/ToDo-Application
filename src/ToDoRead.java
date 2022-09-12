@@ -59,16 +59,26 @@ public class ToDoRead {
         }
     }
     void listTasksByPriority() {
-        PriorityQueue<TaskByPriority> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
+        PriorityQueue<Task> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
         System.out.println("Tasks listed by priority (high ([HI]) > normal ([NOR]) > low ([LO]):");
         read(line -> {
-            String[] fields = line.split(",");
-            tasksByPriority.add(new TaskByPriority(fields[3].trim(), fields[4].trim()));
+            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            fields[3] = fields[3].replace("\"", "");
+            Task newTask = new Task();
+            newTask.setPriority(Integer.parseInt(fields[4].trim()));
+            newTask.setName(fields[3].trim());
+            tasksByPriority.add(newTask);
         });
 
         while (!tasksByPriority.isEmpty()) {
-            TaskByPriority task = tasksByPriority.poll();
-            System.out.println(task.getPriority() + " " + task.getName());
+            Task task = tasksByPriority.poll();
+            String currentPriority = "";
+
+            if (task.getPriority() == 1) currentPriority = "[HI]";
+            else if (task.getPriority() == 0) currentPriority = "[NOR]";
+            else if (task.getPriority() == -1) currentPriority = "[LO]";
+
+            System.out.println(currentPriority + " " + task.getName());
         }
     }
     void listTasksByTimestamp() {
