@@ -97,8 +97,8 @@ public class ToDoRead {
         System.out.println("Number of finished and unfinished tasks: ");
         read(line -> {
             String[] fields = line.split(",");
-            if (fields[1].trim().equals("done")) statsCount[0]++;
-            if (fields[1].trim().equals("pending")) statsCount[1]++;
+            if (fields[1].trim().equals("1")) statsCount[0]++;
+            if (fields[1].trim().equals("0")) statsCount[1]++;
         });
 
         System.out.println("Finished tasks: " + statsCount[0]);
