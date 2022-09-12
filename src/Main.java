@@ -8,6 +8,7 @@ public class Main {
         ToDoWrite toDoWrite = new ToDoWrite("tasks.csv");
 
         System.out.println("Welcome to ToDo application.");
+        System.out.println();
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
                 while (true) {

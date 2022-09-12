@@ -33,31 +33,22 @@ public class ToDoWrite {
     void removeTask1(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
-
         long deletePos = findLinePositionById(idToRemove);
 
         if (deletePos == -1) {
             System.err.println("Task with that uid doesn't exist!");
             return;
         }
-
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             raf.seek(deletePos);
+            if ((char) raf.read() != '\n') raf.seek(deletePos);
 
             String line = raf.readLine();
-            long deletedLineLength = line.length() + 1;
+            int deletedLineLength = line.length() + 1;
 
-            if (raf.getFilePointer() + deletedLineLength == raf.length()){
-                raf.setLength(raf.length() - deletedLineLength);
-                System.out.println("hi");
-                return;
+            while ((line = raf.readLine()) != null) {
+                contentAfterDelete.append(line).append('\n');
             }
-            else {
-                raf.seek(deletePos - 1);
-                while ((line = raf.readLine()) != null)
-                    contentAfterDelete.append(line).append('\n');
-            }
-
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
             raf.setLength(raf.length() - deletedLineLength);
@@ -66,45 +57,6 @@ public class ToDoWrite {
         }
         finally {
             System.out.println("Task successfully removed");
-        }
-    }
-    void removeTask(String command) {
-        StringBuilder contentAfterDelete = new StringBuilder();
-        String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
-
-        long deletePos = 0;
-        int deletedLineLength = 0;
-
-        boolean isIDFound = false;
-
-        try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
-            String line;
-            while ((line = raf.readLine()) != null) {
-                String id = line.split(",")[0].trim();
-
-                if (idToRemove.equals(id)) {
-                    deletePos = raf.getFilePointer() - (line.length()) - 1;
-                    deletedLineLength = line.length() + 1;
-                    isIDFound = true;
-                    continue;
-                }
-                if (isIDFound) {
-                    contentAfterDelete.append(line).append('\n');
-                } else {
-                    if (Integer.parseInt(id) > Integer.parseInt(idToRemove) || raf.getFilePointer() == raf.length()) {
-                        System.err.println("Task with that uid doesn't exist!");
-                        return;
-                    }
-                }
-            }
-            raf.seek(deletePos);
-            raf.writeBytes(contentAfterDelete.toString());
-            raf.setLength(raf.length() - deletedLineLength);
-        } catch (IOException ex) {
-            System.err.println("Error removing the task!");
-        }
-        finally {
-            System.out.println("Task successfully removed.");
         }
     }
 
@@ -171,7 +123,7 @@ public class ToDoWrite {
                 String lineId = line.substring(0, line.indexOf(",")).trim();
 
                 if (id.equals(lineId)) {
-                    position = raf.getFilePointer() - line.length();
+                    position = raf.getFilePointer() - line.length() - 1;
                     break;
                 }
                 if (Integer.parseInt(lineId) > Integer.parseInt(id) || raf.getFilePointer() == raf.length()) {
