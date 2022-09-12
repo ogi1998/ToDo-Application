@@ -13,14 +13,16 @@ public class ToDoWrite {
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             newUser
-                    .append(generateID(raf)).append(", pending, ")
+                    .append(generateID(raf)).append(", 0, ")
                     .append(ToDoUtility.getCurrentDateAndTime())
-                    .append(", ").append(name);
+                    .append(", ").append(name).append(", ");
 
-            if (!command.endsWith("\"")) {
-                String priority = command.substring(command.lastIndexOf("\"") + 1);
-                newUser.append(", ").append(priority);
-            } else newUser.append(", [NORM]");
+            if (command.endsWith("]")) {
+                String priority = command.substring(command.indexOf("["), command.indexOf("]") + 1);
+
+                if (priority.equals("[LO]")) newUser.append(" -1");
+                else if (priority.equals("[HI]")) newUser.append(" 1");
+            } else newUser.append(", 0");
 
             raf.seek(raf.length());
             raf.writeBytes(newUser.toString());
@@ -64,7 +66,7 @@ public class ToDoWrite {
     void editTask(String command) {
 //      StringBuilder contentAfterUpdate = new StringBuilder(userID + ", todo, 05-09-2022 14:55:07, updateee, [HI]\n");
         Task newTask = getUpdateData(command);
-        StringBuilder newContent = new StringBuilder(newTask.getId());
+        StringBuilder contentAfterUpdate = new StringBuilder(newTask.getId());
 
         long updatePos = 0;
         int fileSizeDecreaseAmount = 0;
@@ -78,17 +80,17 @@ public class ToDoWrite {
                 String id = line.split(",")[0].trim();
 
                 if (newTask.getId().equals(id)) {
-                    if (newContent.length() < line.length()) {
-                        fileSizeDecreaseAmount = line.length() - newContent.length() + 1;
+                    if (contentAfterUpdate.length() < line.length()) {
+                        fileSizeDecreaseAmount = line.length() - contentAfterUpdate.length() + 1;
                     }
                     updatePos = raf.getFilePointer() - (line.length() + 1);
                     isIdFound = true;
                     continue;
                 }
-                if (isIdFound) newContent.append(line).append('\n');
+                if (isIdFound) contentAfterUpdate.append(line).append('\n');
             }
             raf.seek(updatePos);
-            raf.writeBytes(newContent.toString());
+            raf.writeBytes(contentAfterUpdate.toString());
             raf.setLength(raf.length() - fileSizeDecreaseAmount);
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");
@@ -147,12 +149,14 @@ public class ToDoWrite {
             newTask.setName(commandArgs[4].trim());
 
             if (commandArgs.length == 6) {
-                newTask.setPriority(commandArgs[5].trim());
-
-            } else if (newTask.getCommandType().equals("-d")) {
-                newTask.setDone(true);
-            } else newTask.setDone(false);
-        }
+                if (commandArgs[5].trim().equals("[\"HI\"]"))
+                    newTask.setPriority(1);
+                else if (commandArgs[5].trim().equals("[\"LO\"]"))
+                    newTask.setPriority(-1);
+            }
+        } else if (newTask.getCommandType().equals("-d")) {
+            newTask.setDone(1);
+        } else newTask.setDone(-1);
         return newTask;
     }
 }

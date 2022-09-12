@@ -2,8 +2,8 @@ public class Task {
     private String id;
     private String name;
 
-    private String priority = "[NOR]";
-    private boolean isDone;
+    private int priority;
+    private int isDone = 0;
     private final String timestamp = ToDoUtility.getCurrentDateAndTime();
 
     private String commandType;
@@ -32,19 +32,19 @@ public class Task {
         this.name = name;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
-    public boolean isDone() {
+    public int isDone() {
         return isDone;
     }
 
-    public void setDone(boolean done) {
+    public void setDone(int done) {
         isDone = done;
     }
 
