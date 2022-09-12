@@ -22,7 +22,7 @@ public class ToDoWrite {
 
                 if (priority.equals("[LO]")) newUser.append(" -1");
                 else if (priority.equals("[HI]")) newUser.append(" 1");
-            } else newUser.append(", 0");
+            } else newUser.append("0");
 
             raf.seek(raf.length());
             raf.writeBytes(newUser.toString());
@@ -30,6 +30,8 @@ public class ToDoWrite {
             System.err.println("ERROR: Can't write to file!");
         }
     }
+
+    // TODO: Double check if it works (after adding new task and deleting first one, it doesnt work properly)
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
@@ -57,6 +59,7 @@ public class ToDoWrite {
             System.err.println("Error removing the task!");
         }
     }
+    // TODO: Add conditions for all types of updates
     void editTask(String command) {
         StringBuilder contentAfterUpdate = new StringBuilder();
         Task newTask = helpers.getUpdateData(command);

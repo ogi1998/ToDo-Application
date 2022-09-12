@@ -20,7 +20,13 @@ public class ToDoRead {
 
         read(line -> {
             String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
             fields[3] = fields[3].replace("\"", "");
+            fields[1] = fields[1].trim().equals("0") ? "[]" : "[X]";
+
+            if (fields[4].trim().equals("1")) fields[4] = "[HI]";
+            else if (fields[4].trim().equals("0")) fields[4] = "[NOR]";
+            else if (fields[4].trim().equals("-1")) fields[4] = "[LO]";
 
             for (String field: fields) {
                 result.append('\t').append(field.trim()).append('\t').append('|');

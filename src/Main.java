@@ -1,10 +1,22 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
 
+    static void createIfFileNotExists() {
+        try {
+            File file = new File("tasks.csv");
+            file.createNewFile();
+        } catch (IOException ex) {
+            System.err.println("ERROR: Can't create new file!");
+        }
+    }
+
     static void run() {
+        createIfFileNotExists();
+
         ToDoRead toDoRead = new ToDoRead("tasks.csv");
         ToDoWrite toDoWrite = new ToDoWrite("tasks.csv");
 
