@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
     static void run() {
@@ -30,7 +31,7 @@ public class Main {
                             case "stats" -> toDoRead.displayStats();
                             case "add" -> toDoWrite.addTask(command);
                             case "task" -> toDoWrite.editTask(command);
-                            case "remove" -> toDoWrite.removeTask1(command);
+                            case "remove" -> toDoWrite.removeTask(command);
                             default -> System.err.println("Wrong command, try again!");
                         }
                     } else System.err.println("Wrong command, try again!");

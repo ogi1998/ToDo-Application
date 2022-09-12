@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 interface DataManipulator {
-        void manipulateData(String[] fields);
+        void manipulateData(String line);
     }
 public class ToDoRead {
     String filePath;
@@ -18,7 +18,10 @@ public class ToDoRead {
         System.out.println("List of all tasks: ");
         System.out.println("\tid\t|\tstatus\t|\tcreated/modified timestamp\t|\t name\t|\tpriority\t|");
 
-        read(fields -> {
+        read(line -> {
+            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            fields[3] = fields[3].replace("\"", "");
+
             for (String field: fields) {
                 result.append('\t').append(field.trim()).append('\t').append('|');
             }
@@ -32,7 +35,8 @@ public class ToDoRead {
 
         System.out.println("Tasks listed by status (pending ([]) > done ([X]):");
 
-        read(fields -> {
+        read(line -> {
+            String[] fields = line.split(",");
             if (fields[1].trim().equals("done"))
                 tasksByStatus.add(new TaskByStatus(fields[3].trim(), "[X]"));
             else tasksByStatus.addFirst(new TaskByStatus(fields[3].trim(), "[]"));
@@ -51,7 +55,8 @@ public class ToDoRead {
     void listTasksByPriority() {
         PriorityQueue<TaskByPriority> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
         System.out.println("Tasks listed by priority (high ([HI]) > normal ([NOR]) > low ([LO]):");
-        read(fields -> {
+        read(line -> {
+            String[] fields = line.split(",");
             tasksByPriority.add(new TaskByPriority(fields[3].trim(), fields[4].trim()));
         });
 
@@ -65,7 +70,8 @@ public class ToDoRead {
 
         System.out.println("Tasks listed by timestamp (newest first):");
 
-        read(fields -> {
+        read(line -> {
+            String[] fields = line.split(",");
             tasksByTimestamp.put(ToDoUtility.dateToMillis(fields[2].trim()), fields[3]);
         });
 
@@ -78,7 +84,8 @@ public class ToDoRead {
         int[] statsCount = new int[2];
 
         System.out.println("Number of finished and unfinished tasks: ");
-        read(fields -> {
+        read(line -> {
+            String[] fields = line.split(",");
             if (fields[1].trim().equals("done")) statsCount[0]++;
             if (fields[1].trim().equals("pending")) statsCount[1]++;
         });
@@ -92,8 +99,7 @@ public class ToDoRead {
             String line;
 
             while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                dm.manipulateData(fields);
+                dm.manipulateData(line);
             }
         } catch (IOException ex) {
             System.err.println("ERROR: File can't be read!");
