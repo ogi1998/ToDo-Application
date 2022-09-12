@@ -31,25 +31,33 @@ public class ToDoRead {
     }
     void listTasksByStatus() {
         boolean shouldPrintSeperator = false;
-        ArrayDeque<TaskByStatus> tasksByStatus = new ArrayDeque<>();
+        ArrayDeque<Task> tasksByStatus = new ArrayDeque<>();
 
         System.out.println("Tasks listed by status (pending ([]) > done ([X]):");
 
         read(line -> {
-            String[] fields = line.split(",");
-            if (fields[1].trim().equals("done"))
-                tasksByStatus.add(new TaskByStatus(fields[3].trim(), "[X]"));
-            else tasksByStatus.addFirst(new TaskByStatus(fields[3].trim(), "[]"));
+            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            fields[3] = fields[3].replace("\"", "");
+
+            Task newTask = new Task();
+            newTask.setDone(Integer.parseInt(fields[1].trim()));
+            newTask.setName(fields[3].trim());
+
+            if (newTask.isDone() == 1)
+                tasksByStatus.add(newTask);
+            else tasksByStatus.addFirst(newTask);
         });
 
         while (!tasksByStatus.isEmpty()) {
-            TaskByStatus task = tasksByStatus.poll();
+            Task task = tasksByStatus.poll();
 
-            if (!shouldPrintSeperator && task.getStatus().equals("[X]")) {
+            if (!shouldPrintSeperator && task.isDone() == 1) {
                 System.out.println("--------------------");
                 shouldPrintSeperator = true;
             }
-            System.out.println(task.getStatus() + '\t' + task.getName());
+
+            String isDone = task.isDone() == 1 ? "[X]" : "[]";
+            System.out.println(isDone + '\t' + task.getName());
         }
     }
     void listTasksByPriority() {

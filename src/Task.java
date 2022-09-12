@@ -4,7 +4,7 @@ public class Task {
 
     private int priority;
     private int isDone = 0;
-    private final String timestamp = ToDoUtility.getCurrentDateAndTime();
+    private String timestamp = ToDoUtility.getCurrentDateAndTime();
 
     private String commandType;
 
