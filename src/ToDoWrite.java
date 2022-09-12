@@ -9,9 +9,10 @@ public class ToDoWrite {
     }
     void addTask(String command) {
         String name = command.substring(command.indexOf("\""), command.lastIndexOf("\"") + 1);
-        StringBuilder newUser = new StringBuilder("\n");
+        StringBuilder newUser = new StringBuilder();
 
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            if (raf.length() > 0) newUser.append('\n');
             newUser
                     .append(helpers.generateID(raf)).append(", 0, ")
                     .append(ToDoUtility.getCurrentDateAndTime())

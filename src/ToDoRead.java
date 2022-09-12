@@ -6,6 +6,7 @@ import java.util.*;
 interface DataManipulator {
         void manipulateData(String line);
     }
+    // TODO: Should check in methods if file exists and should print appropriate message if it doesnt
 public class ToDoRead {
     String filePath;
     ToDoRead(String filePath) {

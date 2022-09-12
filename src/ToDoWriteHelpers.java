@@ -9,6 +9,8 @@ public class ToDoWriteHelpers {
     }
 
     int generateID(RandomAccessFile raf) throws IOException {
+        if (raf.length() == 0) return 1;
+
         StringBuilder userID = new StringBuilder();
         char currentChar;
 
