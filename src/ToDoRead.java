@@ -30,11 +30,10 @@ public class ToDoRead {
         System.out.println(result);
     }
     void listTasksByStatus() {
-        boolean shouldPrintSeperator = false;
+        boolean shouldPrintSeparator = false;
         ArrayDeque<Task> tasksByStatus = new ArrayDeque<>();
 
         System.out.println("Tasks listed by status (pending ([]) > done ([X]):");
-
         read(line -> {
             String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
             fields[3] = fields[3].replace("\"", "");
@@ -51,11 +50,10 @@ public class ToDoRead {
         while (!tasksByStatus.isEmpty()) {
             Task task = tasksByStatus.poll();
 
-            if (!shouldPrintSeperator && task.isDone() == 1) {
+            if (!shouldPrintSeparator && task.isDone() == 1) {
                 System.out.println("--------------------");
-                shouldPrintSeperator = true;
+                shouldPrintSeparator = true;
             }
-
             String isDone = task.isDone() == 1 ? "[X]" : "[]";
             System.out.println(isDone + '\t' + task.getName());
         }
@@ -79,8 +77,13 @@ public class ToDoRead {
         System.out.println("Tasks listed by timestamp (newest first):");
 
         read(line -> {
-            String[] fields = line.split(",");
-            tasksByTimestamp.put(ToDoUtility.dateToMillis(fields[2].trim()), fields[3]);
+            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            fields[3] = fields[3].replace("\"", "");
+
+            Task newTask = new Task();
+            newTask.setTimestamp(fields[2].trim());
+            newTask.setName(fields[3].trim());
+            tasksByTimestamp.put(ToDoUtility.dateToMillis(newTask.getTimestamp()), newTask.getName());
         });
 
         for (Map.Entry<Long, String> entry: tasksByTimestamp.entrySet()) {
