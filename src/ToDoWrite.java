@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 
 public class ToDoWrite {
     String fileName;
@@ -62,8 +63,8 @@ public class ToDoWrite {
     }
     // TODO: Add conditions for all types of updates
     void editTask(String command) {
-        StringBuilder contentAfterUpdate = new StringBuilder();
         Task newTask = helpers.getUpdateData(command);
+        StringBuilder contentAfterUpdate = new StringBuilder();
         long updatePos = helpers.findLinePositionById(newTask.getId());
 
         if (updatePos == -1) {
@@ -73,18 +74,20 @@ public class ToDoWrite {
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             raf.seek(updatePos);
             String line = raf.readLine();
-            String[] splittedLine = line.split(",");
+            String[] splittedLine = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            splittedLine[2] = " " + ToDoUtility.getCurrentDateAndTime();
 
-            contentAfterUpdate
-                    .append(newTask.getId()).append(", ")
-                    .append(splittedLine[1].trim()).append(", ")
-                    .append(ToDoUtility.getCurrentDateAndTime()).append(", ")
-                    .append(newTask.getName()).append(", ");
-            if (newTask.getPriority() != 0)
-                contentAfterUpdate.append(newTask.getPriority());
-            else contentAfterUpdate.append(splittedLine[4].trim());
+            switch (newTask.getCommandType()) {
+                case "-e" -> {
+                    splittedLine[3] = " " + newTask.getName();
+                    if (newTask.getPriority() != 0)
+                        splittedLine[4] = " " + newTask.getPriority();
+                }
+                case "-d" -> splittedLine[1] = " " + 1;
+                case "-u" -> splittedLine[1] = " " + 0;
+            }
+            contentAfterUpdate.append(String.join(",", splittedLine)).append('\n');
 
-            contentAfterUpdate.append('\n');
 
             int fileShrinkAmount = line.length() - contentAfterUpdate.length() + 1;
 
