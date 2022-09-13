@@ -33,7 +33,6 @@ public class ToDoWrite {
         }
     }
 
-    // TODO: Double check if it works (after adding new task and deleting first one, it doesnt work properly)
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
@@ -61,7 +60,6 @@ public class ToDoWrite {
             System.err.println("Error removing the task!");
         }
     }
-    // TODO: Add conditions for all types of updates
     void editTask(String command) {
         Task newTask = helpers.getUpdateData(command);
         StringBuilder contentAfterUpdate = new StringBuilder();

@@ -11,6 +11,16 @@ public class ToDoWriteHelpers {
     int generateID(RandomAccessFile raf) throws IOException {
         if (raf.length() == 0) return 1;
 
+        int numOfLines = 0;
+
+        while (raf.readLine() != null) {
+            if (numOfLines > 2) break;
+            numOfLines++;
+        }
+
+        // When there is 1 line, logic to go back until '\n' doesn't work
+        if (numOfLines == 1) return  2;
+
         StringBuilder userID = new StringBuilder();
         char currentChar;
 
