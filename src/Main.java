@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
+    static final String FILENAME = "tasks.csv";
 
     static void createIfFileNotExists() {
         try {
-            File file = new File("tasks.csv");
+            File file = new File(FILENAME);
             file.createNewFile();
         } catch (IOException ex) {
             System.err.println("ERROR: Can't create new file!");
@@ -17,8 +18,8 @@ public class Main {
     static void run() {
         createIfFileNotExists();
 
-        ToDoRead toDoRead = new ToDoRead("tasks.csv");
-        ToDoWrite toDoWrite = new ToDoWrite("tasks.csv");
+        ToDoRead toDoRead = new ToDoRead(FILENAME);
+        ToDoWrite toDoWrite = new ToDoWrite(FILENAME);
 
         System.out.println("Welcome to ToDo application.");
         System.out.println();
@@ -28,6 +29,8 @@ public class Main {
                     System.out.println("Please enter your command.");
                     String command = br.readLine().trim();
                     String[] cmdArgs = command.split(" ");
+
+                    if (command.equals("stop")) break;
 
                     if (command.startsWith("todo")) {
                         switch (cmdArgs[1]) {

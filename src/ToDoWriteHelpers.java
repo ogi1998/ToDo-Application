@@ -37,8 +37,6 @@ public class ToDoWriteHelpers {
     }
 
     long findLinePositionById(String id) {
-        long position = -1;
-
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
 
@@ -46,17 +44,16 @@ public class ToDoWriteHelpers {
                 String lineId = line.substring(0, line.indexOf(",")).trim();
 
                 if (id.equals(lineId)) {
-                    position = raf.getFilePointer() - (line.length() + 1);
-                    break;
+                    return raf.getFilePointer() - (line.length() + 1);
                 }
-                if (Integer.parseInt(lineId) > Integer.parseInt(id) || raf.getFilePointer() == raf.length()) {
-                    break;
+                if (Integer.parseInt(lineId) > Integer.parseInt(id)) {
+                    return -1;
                 }
             }
         } catch (IOException ex) {
             System.err.println("Error finding id");
         }
-        return position;
+        return -1;
     }
 
     Task getUpdateData(String command) {
@@ -80,6 +77,7 @@ public class ToDoWriteHelpers {
             }
             case "-d" -> newTask.setDone(1);
             case "-u" -> newTask.setDone(-1);
+            default -> System.err.println("Wrong command, try again!");
         }
         return newTask;
     }
