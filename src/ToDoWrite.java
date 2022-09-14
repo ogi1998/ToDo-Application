@@ -83,6 +83,10 @@ public class ToDoWrite {
                 }
                 case "-d" -> splittedLine[1] = " " + 1;
                 case "-u" -> splittedLine[1] = " " + 0;
+                default -> {
+                    System.err.println("Wrong command, try again!");
+                    return;
+                }
             }
             contentAfterUpdate.append(String.join(",", splittedLine)).append('\n');
 

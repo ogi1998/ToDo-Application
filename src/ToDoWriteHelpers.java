@@ -80,7 +80,6 @@ public class ToDoWriteHelpers {
             }
             case "-d" -> newTask.setDone(1);
             case "-u" -> newTask.setDone(-1);
-            default -> System.err.println("Wrong command, try again!");
         }
         return newTask;
     }
