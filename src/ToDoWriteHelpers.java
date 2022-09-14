@@ -9,53 +9,56 @@ public class ToDoWriteHelpers {
     }
 
     int generateID(RandomAccessFile raf) throws IOException {
-        if (raf.length() == 0) return 1;
-
+        StringBuilder userID = new StringBuilder();
         int numOfLines = 0;
 
+        if (raf.length() == 0)
+            return 1;
+
         while (raf.readLine() != null) {
-            if (numOfLines > 2) break;
             numOfLines++;
+            if (numOfLines > 1)
+                break;
         }
 
-        // When there is 1 line, logic to go back until '\n' doesn't work
-        if (numOfLines == 1) return  2;
+        if (numOfLines == 1)
+            return  2;
 
-        StringBuilder userID = new StringBuilder();
         char currentChar;
-
-        raf.seek(raf.length() - 1);
 
         for (long pointer = raf.length() - 1; pointer >= 0; pointer--) {
             raf.seek(pointer);
-
             if ((char) raf.read() == '\n') break;
         }
-        while ((currentChar = (char) raf.read()) != ',') userID.append(currentChar);
 
+        while ((currentChar = (char) raf.read()) != ',') {
+            userID.append(currentChar);
+        }
         return Integer.parseInt(userID.toString()) + 1;
     }
-
-    long findLinePositionById(String id) {
+    long findLinePositionById(String id, char operationType) {
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
+
 
             while ((line = raf.readLine()) != null) {
                 String lineId = line.substring(0, line.indexOf(",")).trim();
 
                 if (id.equals(lineId)) {
-                    return raf.getFilePointer() - (line.length() + 1);
+                    if (operationType == 'd')
+                        return raf.getFilePointer() - (line.length() + 1);
+                    else {
+                        return raf.getFilePointer() - line.length();
+                    }
                 }
-                if (Integer.parseInt(lineId) > Integer.parseInt(id)) {
+                if (Integer.parseInt(lineId) > Integer.parseInt(id))
                     return -1;
-                }
             }
         } catch (IOException ex) {
             System.err.println("Error finding id");
         }
         return -1;
     }
-
     Task getUpdateData(String command) {
         Task newTask = new Task();
         String[] commandArgs = command.split(" ");

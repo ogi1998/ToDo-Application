@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 
 public class ToDoWrite {
     String fileName;
@@ -35,7 +36,7 @@ public class ToDoWrite {
     void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
-        long deletePos = helpers.findLinePositionById(idToRemove);
+        long deletePos = helpers.findLinePositionById(idToRemove, 'd');
 
         if (deletePos == -1) {
             System.err.println("Task with that uid doesn't exist!");
@@ -62,7 +63,7 @@ public class ToDoWrite {
     void editTask(String command) {
         Task newTask = helpers.getUpdateData(command);
         StringBuilder contentAfterUpdate = new StringBuilder();
-        long updatePos = helpers.findLinePositionById(newTask.getId());
+        long updatePos = helpers.findLinePositionById(newTask.getId(), 'u');
 
         if (updatePos == -1) {
             System.out.println("Task with that uid doesn't exist!");
@@ -85,14 +86,17 @@ public class ToDoWrite {
             }
             contentAfterUpdate.append(String.join(",", splittedLine)).append('\n');
 
-
             int fileShrinkAmount = line.length() - contentAfterUpdate.length() + 1;
 
             while ((line = raf.readLine()) != null)
                 contentAfterUpdate.append(line).append('\n');
+
+            contentAfterUpdate.deleteCharAt(contentAfterUpdate.length() - 1);
             raf.seek(updatePos);
             raf.writeBytes(contentAfterUpdate.toString());
-            if (fileShrinkAmount > 0) raf.setLength(raf.length() - fileShrinkAmount);
+
+            if (fileShrinkAmount > 0)
+                raf.setLength(raf.length() - fileShrinkAmount);
             System.out.println("Task successfully updated!");
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");

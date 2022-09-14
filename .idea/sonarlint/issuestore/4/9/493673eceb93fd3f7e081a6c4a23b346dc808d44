@@ -1,0 +1,13 @@
+
+x
+java:S1192"bDefine a constant instead of duplicating this literal ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)" 4 times.(Òä†Ž
+0
+java:S1220""Move this file to a named package.
+b
+java:S5998"LRefactor this repetition that can lead to a stack overflow for large inputs.(Òä†Ž
+b
+java:S5998,"LRefactor this repetition that can lead to a stack overflow for large inputs.(Òä†Ž
+b
+java:S5998G"LRefactor this repetition that can lead to a stack overflow for large inputs.(Òä†Ž
+b
+java:S5998`"LRefactor this repetition that can lead to a stack overflow for large inputs.(Òä†Ž
