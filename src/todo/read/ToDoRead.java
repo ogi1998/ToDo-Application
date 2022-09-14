@@ -14,6 +14,8 @@ interface DataManipulator {
     }
 public class ToDoRead {
     String filePath;
+
+    static final String REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
     public ToDoRead(String filePath) {
         this.filePath = filePath;
     }
@@ -25,14 +27,16 @@ public class ToDoRead {
         System.out.println("\tid\t|\tstatus\t|\tcreated/modified timestamp\t|\t name\t|\tpriority\t|");
 
         read(line -> {
-            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            String[] fields = line.split(REGEX);
 
             fields[3] = fields[3].replace("\"", "");
             fields[1] = fields[1].trim().equals("0") ? "[]" : "[X]";
 
-            if (fields[4].trim().equals("1")) fields[4] = "[HI]";
-            else if (fields[4].trim().equals("0")) fields[4] = "[NOR]";
-            else if (fields[4].trim().equals("-1")) fields[4] = "[LO]";
+            switch (fields[4].trim()) {
+                case "1" -> fields[4] = "[HI]";
+                case "0" -> fields[4] = "[NOR]";
+                default -> fields[4] = "[LO]";
+            }
 
             for (String field: fields) {
                 result.append('\t').append(field.trim()).append('\t').append('|');
@@ -47,7 +51,7 @@ public class ToDoRead {
 
         System.out.println("Tasks listed by status (pending ([]) > done ([X]):");
         read(line -> {
-            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            String[] fields = line.split(REGEX);
             fields[3] = fields[3].replace("\"", "");
 
             Task newTask = new Task();
@@ -74,7 +78,7 @@ public class ToDoRead {
         PriorityQueue<Task> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
         System.out.println("Tasks listed by priority (high ([HI]) > normal ([NOR]) > low ([LO]):");
         read(line -> {
-            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            String[] fields = line.split(REGEX);
             fields[3] = fields[3].replace("\"", "");
             Task newTask = new Task();
             newTask.setPriority(Integer.parseInt(fields[4].trim()));
@@ -99,7 +103,7 @@ public class ToDoRead {
         System.out.println("Tasks listed by timestamp (newest first):");
 
         read(line -> {
-            String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+            String[] fields = line.split(REGEX);
             fields[3] = fields[3].replace("\"", "");
 
             Task newTask = new Task();
@@ -108,9 +112,8 @@ public class ToDoRead {
             tasksByTimestamp.put(ToDoUtility.dateToMillis(newTask.getTimestamp()), newTask.getName());
         });
 
-        for (Map.Entry<Long, String> entry: tasksByTimestamp.entrySet()) {
+        for (Map.Entry<Long, String> entry: tasksByTimestamp.entrySet())
             System.out.println(entry.getValue());
-        }
     }
 
     public void displayStats() {
