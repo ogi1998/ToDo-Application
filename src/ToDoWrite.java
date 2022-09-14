@@ -39,7 +39,7 @@ public class ToDoWrite {
         long deletePos = helpers.findLinePositionById(idToRemove, 'd');
 
         if (deletePos == -1) {
-            System.err.println("Task with that uid doesn't exist!");
+            System.err.println("Wrong uid!");
             return;
         }
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
@@ -66,7 +66,7 @@ public class ToDoWrite {
         long updatePos = helpers.findLinePositionById(newTask.getId(), 'u');
 
         if (updatePos == -1) {
-            System.out.println("Task with that uid doesn't exist!");
+            System.err.println("Wrong uid!");
             return;
         }
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {

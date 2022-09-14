@@ -37,9 +37,12 @@ public class ToDoWriteHelpers {
         return Integer.parseInt(userID.toString()) + 1;
     }
     long findLinePositionById(String id, char operationType) {
+        for (int i = 0; i < id.length(); i++)
+            if (!Character.isDigit(id.charAt(i)))
+                return -1;
+
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
-
 
             while ((line = raf.readLine()) != null) {
                 String lineId = line.substring(0, line.indexOf(",")).trim();
