@@ -40,15 +40,24 @@ public class ToDoWrite {
     public void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
+
         long deletePos = helpers.findLinePositionById(idToRemove, 'd');
+
 
         if (deletePos == -1) {
             System.err.println("Wrong uid!");
             return;
         }
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
+            if (deletePos == 0) {
+                raf.setLength(0);
+                System.out.println("Task successfully removed!");
+                return;
+            }
+
             raf.seek(deletePos);
-            if ((char) raf.read() != '\n') raf.seek(deletePos);
+            if ((char) raf.read() != '\n')
+                raf.seek(deletePos);
 
             String line = raf.readLine();
             int deletedLineLength = line.length() + 1;
@@ -59,7 +68,7 @@ public class ToDoWrite {
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
             raf.setLength(raf.length() - deletedLineLength);
-            System.out.println("todo.task.Task successfully removed!");
+            System.out.println("Task successfully removed!");
         } catch (IOException ex) {
             System.err.println("Error removing the task!");
         }
@@ -105,7 +114,7 @@ public class ToDoWrite {
 
             if (fileShrinkAmount > 0)
                 raf.setLength(raf.length() - fileShrinkAmount);
-            System.out.println("todo.task.Task successfully updated!");
+            System.out.println("Task successfully updated!");
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");
         }

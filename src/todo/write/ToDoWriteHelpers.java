@@ -42,9 +42,9 @@ public class ToDoWriteHelpers {
     }
     long findLinePositionById(String id, char operationType) {
         for (int i = 0; i < id.length(); i++)
-            if (!Character.isDigit(id.charAt(i)))
+            if (!Character.isDigit(id.charAt(i))) {
                 return -1;
-
+            }
         try (RandomAccessFile raf = new RandomAccessFile(fileName, "rw")) {
             String line;
 
@@ -52,9 +52,11 @@ public class ToDoWriteHelpers {
                 String lineId = line.substring(0, line.indexOf(",")).trim();
 
                 if (id.equals(lineId)) {
-                    if (operationType == 'd')
+                    if (operationType == 'd') {
+                        if (raf.getFilePointer() == line.length())
+                            return 0;
                         return raf.getFilePointer() - (line.length() + 1);
-                    else {
+                    } else {
                         return raf.getFilePointer() - line.length();
                     }
                 }

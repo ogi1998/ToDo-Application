@@ -12,7 +12,8 @@ public class Main {
 
     static void createIfFileNotExists() {
         try {
-            new File(FILENAME).createNewFile();
+            if (new File(FILENAME).createNewFile())
+                System.out.println("New file tasks.csv created.");
         } catch (IOException ex) {
             System.err.println("ERROR: Can't create new file!");
         }
