@@ -1,3 +1,9 @@
+package todo.read;
+
+import todo.task.Task;
+import todo.task.TaskByPriorityComparator;
+import todo.util.ToDoUtility;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,11 +14,11 @@ interface DataManipulator {
     }
 public class ToDoRead {
     String filePath;
-    ToDoRead(String filePath) {
+    public ToDoRead(String filePath) {
         this.filePath = filePath;
     }
 
-    void listTasks() {
+    public void listTasks() {
         StringBuilder result = new StringBuilder("");
 
         System.out.println("List of all tasks: ");
@@ -35,7 +41,7 @@ public class ToDoRead {
         });
         System.out.println(result);
     }
-    void listTasksByStatus() {
+    public void listTasksByStatus() {
         boolean shouldPrintSeparator = false;
         ArrayDeque<Task> tasksByStatus = new ArrayDeque<>();
 
@@ -64,7 +70,7 @@ public class ToDoRead {
             System.out.println(isDone + '\t' + task.getName());
         }
     }
-    void listTasksByPriority() {
+    public void listTasksByPriority() {
         PriorityQueue<Task> tasksByPriority = new PriorityQueue<>(new TaskByPriorityComparator());
         System.out.println("Tasks listed by priority (high ([HI]) > normal ([NOR]) > low ([LO]):");
         read(line -> {
@@ -87,7 +93,7 @@ public class ToDoRead {
             System.out.println(currentPriority + " " + task.getName());
         }
     }
-    void listTasksByTimestamp() {
+    public void listTasksByTimestamp() {
         TreeMap<Long, String> tasksByTimestamp = new TreeMap<>(Comparator.reverseOrder());
 
         System.out.println("Tasks listed by timestamp (newest first):");
@@ -107,7 +113,7 @@ public class ToDoRead {
         }
     }
 
-    void displayStats() {
+    public void displayStats() {
         int[] statsCount = new int[2];
 
         System.out.println("Number of finished and unfinished tasks: ");

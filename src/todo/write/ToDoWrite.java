@@ -1,14 +1,18 @@
+package todo.write;
+
+import todo.task.Task;
+import todo.util.ToDoUtility;
+
 import java.io.*;
-import java.util.Arrays;
 
 public class ToDoWrite {
     String fileName;
     ToDoWriteHelpers helpers;
-    ToDoWrite(String fileName) {
+    public ToDoWrite(String fileName) {
         this.fileName = fileName;
         helpers = new ToDoWriteHelpers(fileName);
     }
-    void addTask(String command) {
+    public void addTask(String command) {
         String name = command.substring(command.indexOf("\""), command.lastIndexOf("\"") + 1);
         StringBuilder newUser = new StringBuilder();
 
@@ -33,7 +37,7 @@ public class ToDoWrite {
         }
     }
 
-    void removeTask(String command) {
+    public void removeTask(String command) {
         StringBuilder contentAfterDelete = new StringBuilder();
         String idToRemove = command.substring(command.lastIndexOf(" ")).trim();
         long deletePos = helpers.findLinePositionById(idToRemove, 'd');
@@ -55,12 +59,12 @@ public class ToDoWrite {
             raf.seek(deletePos);
             raf.writeBytes(contentAfterDelete.toString());
             raf.setLength(raf.length() - deletedLineLength);
-            System.out.println("Task successfully removed!");
+            System.out.println("todo.task.Task successfully removed!");
         } catch (IOException ex) {
             System.err.println("Error removing the task!");
         }
     }
-    void editTask(String command) {
+    public void editTask(String command) {
         Task newTask = helpers.getUpdateData(command);
         StringBuilder contentAfterUpdate = new StringBuilder();
         long updatePos = helpers.findLinePositionById(newTask.getId(), 'u');
@@ -101,7 +105,7 @@ public class ToDoWrite {
 
             if (fileShrinkAmount > 0)
                 raf.setLength(raf.length() - fileShrinkAmount);
-            System.out.println("Task successfully updated!");
+            System.out.println("todo.task.Task successfully updated!");
         } catch (IOException ex) {
             System.err.println("ERROR: Error updating content!");
         }

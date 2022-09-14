@@ -1,8 +1,12 @@
+package todo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import todo.read.ToDoRead;
+import todo.write.ToDoWrite;
 public class Main {
     static final String FILENAME = "tasks.csv";
 
@@ -24,7 +28,7 @@ public class Main {
 
             try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
                 while (true) {
-                    System.out.println("Please enter your command.");
+                    System.out.println("Please enter your command (enter stop to exit).");
                     String command = br.readLine().trim();
                     String[] cmdArgs = command.split(" ");
 
